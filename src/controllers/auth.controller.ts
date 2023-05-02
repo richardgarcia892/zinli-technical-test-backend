@@ -1,12 +1,12 @@
-import { RequestHandler, Response } from 'express';
+import { RequestHandler } from 'express';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import { newUserResponseDTO } from '../DTO/auth.dto';
 import { NotFoundError, UnauthorizedError } from '../utils/AppError';
 import sendEmail, { MailOptions, sendPasswordRecoveryEmail, sendVerificationEmail } from '../utils/mailer';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import User, { IUser } from '../models/user.model';
-import { JwtPayloadI, JWT_COOKIE_EXPIRES_IN, JWT_EXPIRES_IN, JWT_SECRET } from '../config/jwt.config';
+import User from '../models/user.model';
+import { JwtPayloadI, JWT_EXPIRES_IN, JWT_SECRET } from '../config/jwt.config';
 
 const decodeFakeToken = (token: string): string => {
   return crypto.createHash('sha256').update(token).digest('hex');
@@ -17,21 +17,6 @@ const signToken = (id: string) => {
     expiresIn: JWT_EXPIRES_IN,
   };
   return jwt.sign({ id }, JWT_SECRET, jwtOptions);
-};
-
-const createSendToken = (user: IUser, res: Response): void => {
-  // Generate JWT and cookie tokens
-  const token = signToken(user._id.toString());
-  const cookieOptions = {
-    expires: new Date(Date.now() + JWT_COOKIE_EXPIRES_IN),
-    httpOnly: true,
-  };
-  res.cookie('jwt', token, cookieOptions);
-
-  res.status(StatusCodes.OK).json({
-    status: getReasonPhrase(StatusCodes.OK),
-    data: { token },
-  });
 };
 
 export const isSignedIn: RequestHandler = async (req, _res, next) => {
@@ -112,7 +97,11 @@ export const activateAccount: RequestHandler = async (req, res, next) => {
 
     await user.activateAccount();
 
-    createSendToken(user, res);
+    const token = signToken(user._id.toString());
+    res.status(StatusCodes.OK).json({
+      status: getReasonPhrase(StatusCodes.OK),
+      data: { token },
+    });
   } catch (err) {
     next(err);
   }
@@ -163,8 +152,11 @@ export const signin: RequestHandler = async (req, res, next) => {
       throw new UnauthorizedError('incorrect password');
     }
 
-    // Generate JWT and cookie tokens
-    createSendToken(user, res);
+    const token = signToken(user._id.toString());
+    res.status(StatusCodes.OK).json({
+      status: getReasonPhrase(StatusCodes.OK),
+      data: { token },
+    });
   } catch (err) {
     next(err);
   }
@@ -213,7 +205,11 @@ export const forgotPasswordUpdate: RequestHandler = async (req, res, next) => {
     }
     await user.updatePassword(password);
 
-    createSendToken(user, res);
+    const token = signToken(user._id.toString());
+    res.status(StatusCodes.OK).json({
+      status: getReasonPhrase(StatusCodes.OK),
+      data: { token },
+    });
   } catch (err) {
     next(err);
   }
@@ -235,7 +231,11 @@ export const PasswordUpdate: RequestHandler = async (req, res, next) => {
 
     await user.updatePassword(password);
 
-    createSendToken(user, res);
+    const token = signToken(user._id.toString());
+    res.status(StatusCodes.OK).json({
+      status: getReasonPhrase(StatusCodes.OK),
+      data: { token },
+    });
   } catch (err) {
     next(err);
   }

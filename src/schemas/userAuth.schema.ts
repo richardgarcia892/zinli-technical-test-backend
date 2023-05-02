@@ -11,7 +11,7 @@ import {
 } from '../DTO/auth.dto';
 import { updateUserDTO } from '../DTO/user.dto';
 
-const email = Joi.string().email().min(schemaConfig.emailMinLength).max(schemaConfig.emailMaxLength);
+const email = Joi.string().email().min(schemaConfig.emailMinLength).max(schemaConfig.emailMaxLength).lowercase().trim();
 const firstName = Joi.string().min(schemaConfig.nameMinLength).max(schemaConfig.nameMaxLength);
 const lastName = Joi.string().min(schemaConfig.nameMinLength).max(schemaConfig.nameMaxLength);
 const address = Joi.string().min(schemaConfig.addressMinLength).max(schemaConfig.addressMaxLength);
