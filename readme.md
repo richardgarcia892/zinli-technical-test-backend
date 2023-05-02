@@ -24,6 +24,7 @@ para el Scope del ejercicio, se incluyeron unicamente los controladores y rutas 
 - Actualizacion de contrasena
 - Consulta de perfil de usuario (usuaro actual)
 - Actualizacion de datos de usuario
+- Solicitud de reenvio de verificacion de contrasena (Para usuarios que no activaron la cuenta a los 10 minutos de recibir el email)
 
 ## Por mejorar:
 
@@ -64,4 +65,27 @@ para el Scope del ejercicio, se incluyeron unicamente los controladores y rutas 
 
 ## Despliegue
 
-Pendiente por implementar
+Para realizar el despliegue de la aplicacion en docker,
+
+Crear el archivo .env, en el mismo deben especificarse:
+## APP CONFIG
+APP_PORT=5000
+``
+## DATABASE CONFIG
+DB_HOST=mongo_atlas_db_host
+DB_USER=mongo_atlas_db_username
+DB_PASS=Mongo_atlas_db_password
+DB_CLTR=Mongo_Atlas_cluster
+DB_NAME=Mongo_db_name
+
+## JWT CONFIG
+JWT_SECRET=JWT_secret_string
+
+## SENDGRID SERVICE CREDENTIALS
+EMAIL_USERNAME=email_smtp_user
+EMAIL_PASSWORD=email_smtp_pass
+EMAIL_HOST=email_smtp_host
+EMAIL_PORT=email_smtp_port
+``
+
+ejecutar el comando docker compose up
